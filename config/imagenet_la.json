@@ -1,0 +1,43 @@
+{
+    "exp_base": "/mnt/fs6/honglinc/experiments_data",
+    "debug":false,
+    "exp_name": "imagenet_la",
+    "exp_id": "res18_LA",
+    "agent": "ImageNetAgent",
+    "cuda": true,
+    "gpu_device": [0],
+    "faiss_gpu_device": null,
+    "seed": 1337,
+    "data_loader_workers": 32,
+    "data_params": {
+        "rot_imagenet": 0,
+        "image_size": 224,
+        "image_augment": true
+    },
+    "model_params": {
+        "out_dim": 128,
+        "resnet_version": "preact-resnet18"
+    },
+    "loss_params": {
+        "k": 4096,
+        "t": 0.07,
+        "m": 0.5,
+        "kmeans_k": 30000,
+        "n_kmeans": 10,
+        "kmeans_freq": null,
+        "loss": "LocalAggregationLossModule"
+    },
+    "optim_params": {
+        "batch_size": 128,
+        "learning_rate": 0.03,
+        "momentum": 0.9,
+        "weight_decay": 1e-4,
+        "validate_freq": 1,
+        "patience": 10
+    },
+    "num_epochs": 300,
+    "validate": true,
+    "copy_checkpoint_freq": null,
+    "instance_exp_dir": null,
+    "pretrained_exp_dir": null
+}
