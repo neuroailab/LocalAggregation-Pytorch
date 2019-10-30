@@ -1,4 +1,4 @@
-# Unsupervised learning of view-invariant representations using the Local Aggregation algorithm
+# Local Aggregation for Unsupervised Learning of Visual Embeddings
 
 This is a Pytorch re-implementation of the Local Aggregation (LA) algorithm ([Paper](https://arxiv.org/abs/1903.12355)).
 The Tensorflow version can be found [here](https://github.com/neuroailab/LocalAggregation), which is implemented by the paper author.

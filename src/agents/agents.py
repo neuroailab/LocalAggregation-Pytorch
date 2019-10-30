@@ -565,13 +565,6 @@ class ImageNetAgent(BaseAgent):
                       folder=self.config.checkpoint_dir)
         # self.copy_checkpoint()
 
-        # Save 10th epoch model for warmup later:
-        if self.config.loss_params.loss == 'InstanceDiscriminationLossModule' and self.current_epoch == 9:
-            copy_snapshot(
-                filename=filename, folder=self.config.checkpoint_dir,
-                copyname='checkpoint_epoch{}.pth.tar'.format(self.current_epoch),
-            )
-
 
 class ImageNetFineTuneAgent(BaseAgent):
     """

@@ -78,7 +78,7 @@ class PreActResNet(nn.Module):
         self.in_planes = 64
 
         self.conv1 = nn.Conv2d(input_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
-        self.padding = torch.nn.ConstantPad2d((0, 1, 0, 1), -1e6)
+        self.padding = torch.nn.ConstantPad2d((0, 1, 0, 1), 0.)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=0)
 
         self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
