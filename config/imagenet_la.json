@@ -30,14 +30,15 @@
     "optim_params": {
         "batch_size": 128,
         "learning_rate": 0.03,
+        "lr_decay_schedule": [160, 190],
+        "lr_decay_rate": 0.1,
         "momentum": 0.9,
         "weight_decay": 1e-4,
-        "validate_freq": 1,
-        "patience": 10
+        "validate_freq": 1
     },
-    "num_epochs": 300,
+    "num_epochs": 200,
     "validate": true,
     "copy_checkpoint_freq": null,
-    "instance_exp_dir": null,
+    "instance_exp_dir": "/mnt/fs6/honglinc/experiments_data/experiments/imagenet_ir/res18_IR",
     "pretrained_exp_dir": null
 }

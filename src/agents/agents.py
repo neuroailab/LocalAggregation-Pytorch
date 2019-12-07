@@ -158,17 +158,13 @@ class BaseAgent(object):
         :return:
         """
         for epoch in range(self.current_epoch, self.config.num_epochs):
+            adjust_learning_rate(epoch=epoch, opt_params=self.config.optim_params, optimizer=self.optim)
             self.current_epoch = epoch
             self.train_one_epoch()
             if (self.config.validate and
                     epoch % self.config.optim_params.validate_freq == 0):
                 self.validate()  # validate every now and then
             self.save_checkpoint()
-
-            # check if we should quit early bc bad perf
-            if self.iter_with_no_improv > self.config.optim_params.patience:
-                self.logger.info("Exceeded patience. Stop training...")
-                break
 
     def train_one_epoch(self):
         """
@@ -356,7 +352,6 @@ class ImageNetAgent(BaseAgent):
         self.model = self.model.train()
 
     def _create_optimizer(self):
-
         # Exclude batch norm weights and bias from weight decay
         parameters = exclude_bn_weight_bias_from_weight_decay(self.model,
                                                               weight_decay=self.config.optim_params.weight_decay)
@@ -367,10 +362,6 @@ class ImageNetAgent(BaseAgent):
                                      weight_decay=self.config.optim_params.weight_decay)
 
     def train_one_epoch(self):
-        if self.current_epoch in self.config.optim_params.learning_rate_schedule:
-            adjust_learning_rate(self.optim)
-            self.logger.info(colored('learning rate dropped by a factor of 10', 'red'))
-
         num_batches = self.train_len // self.config.optim_params.batch_size
         tqdm_batch = tqdm(total=num_batches,
                           desc="[Epoch {}, lr {}]".format(self.current_epoch, self.optim.param_groups[0]['lr']))
@@ -482,9 +473,6 @@ class ImageNetAgent(BaseAgent):
 
         if self.current_val_metric >= self.best_val_metric:  # NOTE: >= for accuracy
             self.best_val_metric = self.current_val_metric
-            self.iter_with_no_improv = 0  # reset patience
-        else:
-            self.iter_with_no_improv += 1  # no improvement
 
         tqdm_batch.close()
 
@@ -578,7 +566,12 @@ class ImageNetFineTuneAgent(BaseAgent):
     def __init__(self, config):
         super(ImageNetFineTuneAgent, self).__init__(config)
 
-        model = PreActResNet18()
+        if self.config.model_params.resnet_version == 'preact-resnet18':
+            model = PreActResNet18()
+        else:
+            raise NotImplementedError
+
+        model = model.cuda()
         if self.multigpu:
             model = nn.DataParallel(model)
         filename = os.path.join(self.config.trained_agent_exp_dir, 'checkpoints', 'model_best.pth.tar')
@@ -666,7 +659,7 @@ class ImageNetFineTuneAgent(BaseAgent):
     def train_one_epoch(self):
         num_batches = self.train_len // self.config.optim_params.batch_size
         tqdm_batch = tqdm(total=num_batches,
-                          desc="[Epoch {}]".format(self.current_epoch))
+                          desc="[Epoch {}, lr {}]".format(self.current_epoch, self.optim.param_groups[0]['lr']))
 
         self._set_models_to_train()  # turn on train mode
         epoch_loss = AverageMeter()
@@ -763,9 +756,6 @@ class ImageNetFineTuneAgent(BaseAgent):
         # (important for model checkpointing)
         if self.current_val_metric >= self.best_val_metric:  # NOTE: >= for accuracy
             self.best_val_metric = self.current_val_metric
-            self.iter_with_no_improv = 0   # reset patience
-        else:
-            self.iter_with_no_improv += 1  # no improvement
 
         tqdm_batch.close()
 

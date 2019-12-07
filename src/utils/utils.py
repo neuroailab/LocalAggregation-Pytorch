@@ -75,10 +75,14 @@ class OrderedCounter(Counter, OrderedDict):
         return self.__class__, (OrderedDict(self),)
 
 
-def adjust_learning_rate(optimizer):
-    """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = param_group['lr'] * 0.1
+def adjust_learning_rate(epoch, opt_params, optimizer):
+    if opt_params.lr_decay_schedule is not None:
+        steps = np.sum(epoch > np.asarray(opt_params.lr_decay_schedule))
+        assert isinstance(opt_params.lr_decay_rate, float)
+        if steps > 0:
+            new_lr = opt_params.learning_rate * (opt_params.lr_decay_rate ** steps)
+            for param_group in optimizer.param_groups:
+                param_group['lr'] = new_lr
 
 
 def exclude_bn_weight_bias_from_weight_decay(model, weight_decay):

@@ -33,10 +33,10 @@
     "optim_params": {
         "batch_size": 128,
         "learning_rate": 0.03,
+        "lr_decay_schedule": null,
         "momentum": 0.9,
         "weight_decay": 1e-4,
-        "validate_freq": 1,
-        "patience": 10
+        "validate_freq": 1
     },
     "num_epochs": 10,
     "validate": true,
