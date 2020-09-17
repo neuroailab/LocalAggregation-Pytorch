@@ -11,7 +11,7 @@ The Tensorflow version can be found [here](https://github.com/neuroailab/LocalAg
 
 * Ubuntu 16.04
 * Pytorch 1.2.0
-* [Faiss](https://github.com/facebookresearch/faiss)
+* [Faiss==1.6.1](https://github.com/facebookresearch/faiss)
 * tqdm
 * dotmap
 * tensorboardX
